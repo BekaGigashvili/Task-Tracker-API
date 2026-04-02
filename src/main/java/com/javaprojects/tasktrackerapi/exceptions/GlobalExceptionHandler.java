@@ -29,4 +29,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(error);
     }
 
+    @ExceptionHandler(WrongEmailOrPasswordException.class)
+    public ResponseEntity<ErrorResponse> handleWrongEmailOrPassword(Exception ex) {
+        ErrorResponse error = new ErrorResponse(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
 }
