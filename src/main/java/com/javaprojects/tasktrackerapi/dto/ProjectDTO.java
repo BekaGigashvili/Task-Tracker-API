@@ -1,0 +1,9 @@
+package com.javaprojects.tasktrackerapi.dto;
+
+import lombok.Data;
+
+@Data
+public class ProjectDTO {
+    private String name;
+    private String description;
+}

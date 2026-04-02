@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UserNotFoundException.class)
+    @ExceptionHandler({
+            UserNotFoundException.class,
+            ProjectNotFoundException.class,
+    })
     public ResponseEntity<ErrorResponse> handleUserNotFoundException(Exception ex) {
         HttpStatus status = HttpStatus.NOT_FOUND;
         ErrorResponse error = new ErrorResponse(ex.getMessage());
@@ -30,9 +33,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(WrongEmailOrPasswordException.class)
-    public ResponseEntity<ErrorResponse> handleWrongEmailOrPassword(Exception ex) {
+    public ResponseEntity<ErrorResponse> handleWrongEmailOrPasswordException(Exception ex) {
         ErrorResponse error = new ErrorResponse(ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
+    @ExceptionHandler(ProjectAccessException.class)
+    public ResponseEntity<ErrorResponse> handleProjectAccessException(Exception ex) {
+        ErrorResponse error = new ErrorResponse(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
 
 }
