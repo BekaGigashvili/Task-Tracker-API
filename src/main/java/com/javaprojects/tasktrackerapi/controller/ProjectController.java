@@ -1,6 +1,7 @@
 package com.javaprojects.tasktrackerapi.controller;
 
 import com.javaprojects.tasktrackerapi.dto.ProjectDTO;
+import com.javaprojects.tasktrackerapi.dto.ProjectResponseDTO;
 import com.javaprojects.tasktrackerapi.entity.Project;
 import com.javaprojects.tasktrackerapi.entity.User;
 import com.javaprojects.tasktrackerapi.exceptions.UserNotFoundException;
@@ -30,37 +31,37 @@ public class ProjectController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
-    public List<Project> getAllProjects(Authentication authentication) {
+    public List<ProjectResponseDTO> getAllProjects(Authentication authentication) {
         return projectService.getAllProjects(getCurrentUser(authentication));
     }
 
     @GetMapping("/{name}")
     @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
-    public ResponseEntity<Project> getProjectByName(
+    public ResponseEntity<ProjectResponseDTO> getProjectByName(
             @PathVariable String name,
             Authentication authentication
     ) {
-        Project project = projectService.getProjectByName(name, getCurrentUser(authentication));
+        ProjectResponseDTO project = projectService.getProjectByName(name, getCurrentUser(authentication));
         return ResponseEntity.ok(project);
     }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
-    public ResponseEntity<Project> createProject(
+    public ResponseEntity<ProjectResponseDTO> createProject(
             @RequestBody ProjectDTO projectRequest,
             Authentication authentication
     ) {
-        Project project = projectService
+        ProjectResponseDTO project = projectService
                 .createProject(projectRequest, getCurrentUser(authentication));
         return ResponseEntity.status(HttpStatus.CREATED).body(project);
     }
 
     @PutMapping("/{name}")
     @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
-    public ResponseEntity<Project> updateProject(@PathVariable String name,
+    public ResponseEntity<ProjectResponseDTO> updateProject(@PathVariable String name,
                                  @RequestBody ProjectDTO dto,
                                  Authentication authentication) {
-        Project project = projectService.updateProject(name, dto, getCurrentUser(authentication));
+        ProjectResponseDTO project = projectService.updateProject(name, dto, getCurrentUser(authentication));
         return ResponseEntity.status(HttpStatus.OK).body(project);
     }
 

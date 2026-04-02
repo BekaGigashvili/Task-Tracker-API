@@ -1,6 +1,7 @@
 package com.javaprojects.tasktrackerapi.service;
 
 import com.javaprojects.tasktrackerapi.dto.ProjectDTO;
+import com.javaprojects.tasktrackerapi.dto.ProjectResponseDTO;
 import com.javaprojects.tasktrackerapi.entity.Project;
 import com.javaprojects.tasktrackerapi.entity.Role;
 import com.javaprojects.tasktrackerapi.entity.User;
@@ -23,28 +24,33 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final ProjectMapper projectMapper;
 
-    public List<Project> getAllProjects(User currentUser) {
+    public List<ProjectResponseDTO> getAllProjects(User currentUser) {
         if (currentUser.getRole().equals(Role.ADMIN)) {
-            return projectRepository.findAll();
+            return projectRepository
+                    .findAll()
+                    .stream()
+                    .map(projectMapper::toDto)
+                    .toList();
         } else {
             return projectRepository.findAll().stream()
                     .filter(p -> p.getOwner().getId().equals(currentUser.getId()))
+                    .map(projectMapper::toDto)
                     .toList();
         }
     }
 
-    public Project getProjectByName(String name, User currentUser) {
+    public ProjectResponseDTO getProjectByName(String name, User currentUser) {
         Optional<Project> projectOpt = projectRepository.findByName(name);
         if (projectOpt.isPresent()) {
             Project project = projectOpt.get();
             if (currentUser.getRole().equals(Role.ADMIN) || project.getOwner().getId().equals(currentUser.getId())) {
-                return project;
+                return projectMapper.toDto(project);
             }
         }
         return null;
     }
 
-    public Project createProject(ProjectDTO projectDTO, User currentUser) {
+    public ProjectResponseDTO createProject(ProjectDTO projectDTO, User currentUser) {
         if(projectRepository.existsByName(projectDTO.getName())){
             throw new ProjectAccessException("Project already exists");
         }
@@ -53,11 +59,13 @@ public class ProjectService {
         LocalDateTime now = LocalDateTime.now();
         project.setCreateDate(now);
         project.setUpdateDate(now);
-        return projectRepository.save(project);
+
+        Project savedProject = projectRepository.save(project);
+        return projectMapper.toDto(savedProject);
     }
 
     @Transactional
-    public Project updateProject(String name, ProjectDTO dto, User currentUser) {
+    public ProjectResponseDTO updateProject(String name, ProjectDTO dto, User currentUser) {
         Project project = projectRepository.findByName(name)
                 .orElseThrow(() -> new ProjectNotFoundException("Project not found!"));
 
@@ -69,7 +77,9 @@ public class ProjectService {
         projectMapper.updateProjectFromDto(dto, project);
         project.setUpdateDate(LocalDateTime.now());
 
-        return projectRepository.save(project);
+        Project updatedProject = projectRepository.save(project);
+
+        return projectMapper.toDto(updatedProject);
     }
 
     @Transactional

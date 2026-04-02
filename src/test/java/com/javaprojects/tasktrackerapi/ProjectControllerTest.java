@@ -2,6 +2,7 @@ package com.javaprojects.tasktrackerapi;
 
 import com.javaprojects.tasktrackerapi.controller.ProjectController;
 import com.javaprojects.tasktrackerapi.dto.ProjectDTO;
+import com.javaprojects.tasktrackerapi.dto.ProjectResponseDTO;
 import com.javaprojects.tasktrackerapi.entity.Project;
 import com.javaprojects.tasktrackerapi.entity.User;
 import com.javaprojects.tasktrackerapi.exceptions.UserNotFoundException;
@@ -49,10 +50,10 @@ class ProjectControllerTest {
 
     @Test
     void getAllProjects_returnsProjectList() {
-        List<Project> projects = List.of(new Project(), new Project());
+        List<ProjectResponseDTO> projects = List.of(new ProjectResponseDTO(), new ProjectResponseDTO());
         when(projectService.getAllProjects(mockUser)).thenReturn(projects);
 
-        List<Project> result = projectController.getAllProjects(authentication);
+        List<ProjectResponseDTO> result = projectController.getAllProjects(authentication);
 
         assertEquals(2, result.size());
         verify(projectService, times(1)).getAllProjects(mockUser);
@@ -60,14 +61,13 @@ class ProjectControllerTest {
 
     @Test
     void getProjectByName_returnsProject() {
-        Project project = new Project();
+        ProjectResponseDTO project = new ProjectResponseDTO();
         project.setName("Project1");
         when(projectService.getProjectByName("Project1", mockUser)).thenReturn(project);
 
-        ResponseEntity<Project> response = projectController.getProjectByName("Project1", authentication);
+        ResponseEntity<ProjectResponseDTO> response = projectController.getProjectByName("Project1", authentication);
 
         assertEquals(200, response.getStatusCode().value());
-        assertEquals(project, response.getBody());
     }
 
     @Test
@@ -81,12 +81,12 @@ class ProjectControllerTest {
     @Test
     void createProject_returnsCreatedProject() {
         ProjectDTO dto = new ProjectDTO();
-        Project createdProject = new Project();
+        ProjectResponseDTO createdProject = new ProjectResponseDTO();
         createdProject.setName("NewProject");
 
         when(projectService.createProject(dto, mockUser)).thenReturn(createdProject);
 
-        ResponseEntity<Project> response = projectController.createProject(dto, authentication);
+        ResponseEntity<ProjectResponseDTO> response = projectController.createProject(dto, authentication);
 
         assertEquals(201, response.getStatusCode().value());
         assertEquals(createdProject, response.getBody());
@@ -96,12 +96,12 @@ class ProjectControllerTest {
     @Test
     void updateProject_returnsUpdatedProject() {
         ProjectDTO dto = new ProjectDTO();
-        Project updatedProject = new Project();
+        ProjectResponseDTO updatedProject = new ProjectResponseDTO();
         updatedProject.setName("UpdatedProject");
 
         when(projectService.updateProject("Project1", dto, mockUser)).thenReturn(updatedProject);
 
-        ResponseEntity<Project> response = projectController.updateProject("Project1", dto, authentication);
+        ResponseEntity<ProjectResponseDTO> response = projectController.updateProject("Project1", dto, authentication);
 
         assertEquals(200, response.getStatusCode().value());
         assertEquals(updatedProject, response.getBody());

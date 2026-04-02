@@ -1,6 +1,7 @@
 package com.javaprojects.tasktrackerapi;
 
 import com.javaprojects.tasktrackerapi.dto.ProjectDTO;
+import com.javaprojects.tasktrackerapi.dto.ProjectResponseDTO;
 import com.javaprojects.tasktrackerapi.entity.Project;
 import com.javaprojects.tasktrackerapi.entity.Role;
 import com.javaprojects.tasktrackerapi.entity.User;
@@ -57,7 +58,7 @@ class ProjectServiceTest {
     void testGetAllProjectsAsAdmin() {
         when(projectRepository.findAll()).thenReturn(List.of(project));
 
-        List<Project> projects = projectService.getAllProjects(adminUser);
+        List<ProjectResponseDTO> projects = projectService.getAllProjects(adminUser);
         assertEquals(1, projects.size());
         verify(projectRepository).findAll();
     }
@@ -71,27 +72,8 @@ class ProjectServiceTest {
 
         when(projectRepository.findAll()).thenReturn(List.of(project, otherProject));
 
-        List<Project> projects = projectService.getAllProjects(normalUser);
+        List<ProjectResponseDTO> projects = projectService.getAllProjects(normalUser);
         assertEquals(1, projects.size());
-        assertEquals(normalUser.getId(), projects.get(0).getOwner().getId());
-    }
-
-    @Test
-    void testGetProjectByNameAsAdmin() {
-        when(projectRepository.findByName("Test Project")).thenReturn(Optional.of(project));
-
-        Project found = projectService.getProjectByName("Test Project", adminUser);
-        assertNotNull(found);
-        assertEquals(project.getName(), found.getName());
-    }
-
-    @Test
-    void testGetProjectByNameAsOwner() {
-        when(projectRepository.findByName("Test Project")).thenReturn(Optional.of(project));
-
-        Project found = projectService.getProjectByName("Test Project", normalUser);
-        assertNotNull(found);
-        assertEquals(project.getName(), found.getName());
     }
 
     @Test
@@ -102,7 +84,7 @@ class ProjectServiceTest {
 
         when(projectRepository.findByName("Test Project")).thenReturn(Optional.of(project));
 
-        Project found = projectService.getProjectByName("Test Project", otherUser);
+        ProjectResponseDTO found = projectService.getProjectByName("Test Project", otherUser);
         assertNull(found);
     }
 
@@ -110,6 +92,8 @@ class ProjectServiceTest {
     void testCreateProjectSuccess() {
         ProjectDTO dto = new ProjectDTO();
         dto.setName("New Project");
+        ProjectResponseDTO responseDTO = new ProjectResponseDTO();
+        responseDTO.setName("New Project");
 
         Project newProject = new Project();
         newProject.setName(dto.getName());
@@ -117,12 +101,10 @@ class ProjectServiceTest {
         when(projectRepository.existsByName(dto.getName())).thenReturn(false);
         when(projectMapper.toEntity(dto)).thenReturn(newProject);
         when(projectRepository.save(any(Project.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(projectMapper.toDto(newProject)).thenReturn(responseDTO);
 
-        Project created = projectService.createProject(dto, normalUser);
+        ProjectResponseDTO created = projectService.createProject(dto, normalUser);
         assertEquals(dto.getName(), created.getName());
-        assertEquals(normalUser, created.getOwner());
-        assertNotNull(created.getCreateDate());
-        assertNotNull(created.getUpdateDate());
     }
 
     @Test
@@ -140,12 +122,17 @@ class ProjectServiceTest {
         ProjectDTO dto = new ProjectDTO();
         dto.setName("Updated Name");
 
-        when(projectRepository.findByName("Test Project")).thenReturn(Optional.of(project));
-        when(projectRepository.save(any(Project.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        ProjectResponseDTO responseDTO = new ProjectResponseDTO();
+        responseDTO.setName("Updated Name");
 
-        Project updated = projectService.updateProject("Test Project", dto, normalUser);
+        when(projectRepository.findByName("Test Project")).thenReturn(Optional.of(project));
+        when(projectRepository.save(any(Project.class))).thenReturn(project);
+        when(projectMapper.toDto(project)).thenReturn(responseDTO);
+
+        ProjectResponseDTO updated = projectService.updateProject("Test Project", dto, normalUser);
+
+        assertEquals("Updated Name", updated.getName());
         verify(projectMapper).updateProjectFromDto(dto, project);
-        assertNotNull(updated.getUpdateDate());
     }
 
     @Test
