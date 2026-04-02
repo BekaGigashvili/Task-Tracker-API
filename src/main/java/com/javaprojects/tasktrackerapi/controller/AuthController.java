@@ -1,5 +1,6 @@
 package com.javaprojects.tasktrackerapi.controller;
 
+import com.javaprojects.tasktrackerapi.security.AuthenticationRequest;
 import com.javaprojects.tasktrackerapi.security.RegistrationRequest;
 import com.javaprojects.tasktrackerapi.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final AuthService authService;
 
-    @PostMapping("/user")
+    @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegistrationRequest request){
         authService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody AuthenticationRequest request){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(authService.login(request));
     }
 }
