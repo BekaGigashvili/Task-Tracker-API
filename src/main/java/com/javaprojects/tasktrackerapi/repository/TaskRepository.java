@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 
 
 @Repository
@@ -22,4 +23,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
                                  @Param("status") Status status,
                                  @Param("priority") Priority priority,
                                  Pageable pageable);
+
+    void deleteByProject(Project project);
 }

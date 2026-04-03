@@ -4,11 +4,13 @@ import com.javaprojects.tasktrackerapi.dto.ProjectDTO;
 import com.javaprojects.tasktrackerapi.dto.ProjectResponseDTO;
 import com.javaprojects.tasktrackerapi.entity.Project;
 import com.javaprojects.tasktrackerapi.entity.Role;
+import com.javaprojects.tasktrackerapi.entity.Task;
 import com.javaprojects.tasktrackerapi.entity.User;
 import com.javaprojects.tasktrackerapi.exceptions.ProjectAccessException;
 import com.javaprojects.tasktrackerapi.exceptions.ProjectNotFoundException;
 import com.javaprojects.tasktrackerapi.mapper.ProjectMapper;
 import com.javaprojects.tasktrackerapi.repository.ProjectRepository;
+import com.javaprojects.tasktrackerapi.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final ProjectMapper projectMapper;
+    private final TaskRepository taskRepository;
 
     public List<ProjectResponseDTO> getAllProjects(User currentUser) {
         if (currentUser.getRole().equals(Role.ADMIN)) {
@@ -95,6 +98,8 @@ public class ProjectService {
                 !project.getOwner().getId().equals(currentUser.getId())) {
             throw new ProjectAccessException("You are not allowed to delete this project!");
         }
+
+        taskRepository.deleteByProject(project);
 
         projectRepository.delete(project);
     }

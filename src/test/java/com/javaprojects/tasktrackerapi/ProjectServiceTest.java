@@ -9,6 +9,7 @@ import com.javaprojects.tasktrackerapi.exceptions.ProjectAccessException;
 import com.javaprojects.tasktrackerapi.exceptions.ProjectNotFoundException;
 import com.javaprojects.tasktrackerapi.mapper.ProjectMapper;
 import com.javaprojects.tasktrackerapi.repository.ProjectRepository;
+import com.javaprojects.tasktrackerapi.repository.TaskRepository;
 import com.javaprojects.tasktrackerapi.service.ProjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,9 @@ class ProjectServiceTest {
 
     @Mock
     private ProjectRepository projectRepository;
+
+    @Mock
+    private TaskRepository taskRepository;
 
     @Mock
     private ProjectMapper projectMapper;
@@ -159,10 +163,13 @@ class ProjectServiceTest {
 
     @Test
     void testDeleteProjectSuccess() {
+        project.setOwner(normalUser);
+
         when(projectRepository.findByName("Test Project")).thenReturn(Optional.of(project));
 
         projectService.deleteProject("Test Project", normalUser);
 
+        verify(taskRepository).deleteByProject(project);
         verify(projectRepository).delete(project);
     }
 
