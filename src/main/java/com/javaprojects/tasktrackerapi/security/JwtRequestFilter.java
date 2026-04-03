@@ -1,7 +1,7 @@
 package com.javaprojects.tasktrackerapi.security;
 
-import com.javaprojects.tasktrackerapi.service.CustomUserDetailsService;
-import com.javaprojects.tasktrackerapi.service.JwtService;
+import com.javaprojects.tasktrackerapi.service.auth.CustomUserDetailsService;
+import com.javaprojects.tasktrackerapi.service.auth.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

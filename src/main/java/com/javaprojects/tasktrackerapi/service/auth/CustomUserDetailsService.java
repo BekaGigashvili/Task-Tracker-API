@@ -1,7 +1,6 @@
-package com.javaprojects.tasktrackerapi.service;
+package com.javaprojects.tasktrackerapi.service.auth;
 
 import com.javaprojects.tasktrackerapi.entity.User;
-import com.javaprojects.tasktrackerapi.exceptions.UserNotFoundException;
 import com.javaprojects.tasktrackerapi.repository.UserRepository;
 import com.javaprojects.tasktrackerapi.security.CustomUserDetails;
 import lombok.NonNull;

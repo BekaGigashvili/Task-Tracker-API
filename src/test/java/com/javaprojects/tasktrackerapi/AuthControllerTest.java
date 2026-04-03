@@ -4,7 +4,7 @@ import com.javaprojects.tasktrackerapi.controller.AuthController;
 import com.javaprojects.tasktrackerapi.security.AuthenticationRequest;
 import com.javaprojects.tasktrackerapi.security.AuthenticationResponse;
 import com.javaprojects.tasktrackerapi.security.RegistrationRequest;
-import com.javaprojects.tasktrackerapi.service.AuthService;
+import com.javaprojects.tasktrackerapi.service.auth.AuthService;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;

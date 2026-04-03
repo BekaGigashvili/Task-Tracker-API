@@ -7,6 +7,8 @@ import com.javaprojects.tasktrackerapi.entity.User;
 import com.javaprojects.tasktrackerapi.exceptions.UserNotFoundException;
 import com.javaprojects.tasktrackerapi.service.ProjectService;
 import com.javaprojects.tasktrackerapi.service.UserService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +27,7 @@ public class ProjectController {
     private final UserService userService;
 
     private User getCurrentUser(Authentication authentication) {
-        return userService.findByEmail(authentication.getName())
-                .orElseThrow(() -> new UserNotFoundException("Authenticated user not found"));
+        return userService.findByEmail(authentication.getName());
     }
 
     @GetMapping
@@ -38,17 +39,17 @@ public class ProjectController {
     @GetMapping("/{name}")
     @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
     public ResponseEntity<ProjectResponseDTO> getProjectByName(
-            @PathVariable String name,
+            @PathVariable @NotNull String name,
             Authentication authentication
     ) {
         ProjectResponseDTO project = projectService.getProjectByName(name, getCurrentUser(authentication));
-        return ResponseEntity.ok(project);
+        return ResponseEntity.status(HttpStatus.OK).body(project);
     }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
     public ResponseEntity<ProjectResponseDTO> createProject(
-            @RequestBody ProjectDTO projectRequest,
+            @RequestBody @Valid ProjectDTO projectRequest,
             Authentication authentication
     ) {
         ProjectResponseDTO project = projectService
@@ -58,17 +59,22 @@ public class ProjectController {
 
     @PutMapping("/{name}")
     @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
-    public ResponseEntity<ProjectResponseDTO> updateProject(@PathVariable String name,
-                                 @RequestBody ProjectDTO dto,
-                                 Authentication authentication) {
+    public ResponseEntity<ProjectResponseDTO> updateProject(
+            @PathVariable @NotNull String name,
+            @RequestBody @Valid ProjectDTO dto,
+            Authentication authentication
+    ) {
         ProjectResponseDTO project = projectService.updateProject(name, dto, getCurrentUser(authentication));
         return ResponseEntity.status(HttpStatus.OK).body(project);
     }
 
     @DeleteMapping("/{name}")
     @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
-    public ResponseEntity<?> deleteProject(@PathVariable String name, Authentication authentication) {
+    public ResponseEntity<?> deleteProject(
+            @PathVariable @NotNull String name,
+            Authentication authentication
+    ) {
         projectService.deleteProject(name, getCurrentUser(authentication));
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

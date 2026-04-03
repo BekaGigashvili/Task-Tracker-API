@@ -45,7 +45,7 @@ class ProjectControllerTest {
         mockUser.setEmail("user@example.com");
 
         when(authentication.getName()).thenReturn("user@example.com");
-        when(userService.findByEmail("user@example.com")).thenReturn(Optional.of(mockUser));
+        when(userService.findByEmail("user@example.com")).thenReturn(mockUser);
     }
 
     @Test
@@ -68,14 +68,6 @@ class ProjectControllerTest {
         ResponseEntity<ProjectResponseDTO> response = projectController.getProjectByName("Project1", authentication);
 
         assertEquals(200, response.getStatusCode().value());
-    }
-
-    @Test
-    void getProjectByName_userNotFound_throwsException() {
-        when(userService.findByEmail("user@example.com")).thenReturn(Optional.empty());
-        assertThrows(UserNotFoundException.class, () ->
-                projectController.getProjectByName("Project1", authentication)
-        );
     }
 
     @Test

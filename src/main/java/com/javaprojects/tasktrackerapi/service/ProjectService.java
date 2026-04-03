@@ -74,6 +74,10 @@ public class ProjectService {
             throw new ProjectAccessException("You are not allowed to update this project!");
         }
 
+        if(projectRepository.existsByName(dto.getName())){
+            throw new ProjectAccessException("Project name already exists");
+        }
+
         projectMapper.updateProjectFromDto(dto, project);
         project.setUpdateDate(LocalDateTime.now());
 
@@ -93,5 +97,11 @@ public class ProjectService {
         }
 
         projectRepository.delete(project);
+    }
+
+    public Project findByName(String name){
+        return projectRepository
+                .findByName(name)
+                .orElseThrow(() -> new ProjectNotFoundException("Project not found"));
     }
 }

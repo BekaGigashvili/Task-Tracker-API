@@ -11,6 +11,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({
             UserNotFoundException.class,
             ProjectNotFoundException.class,
+            TaskNotFoundException.class
     })
     public ResponseEntity<ErrorResponse> handleUserNotFoundException(Exception ex) {
         HttpStatus status = HttpStatus.NOT_FOUND;
@@ -25,8 +26,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(error);
     }
 
-    @ExceptionHandler(NonExistentRoleException.class)
-    public ResponseEntity<ErrorResponse> handleNonExistentRoleException(Exception ex) {
+    @ExceptionHandler({
+            NonExistentRoleException.class,
+            NonExistentStatusException.class,
+            NonExistentPriorityException.class
+    })
+    public ResponseEntity<ErrorResponse> handleNonExistentExceptions(Exception ex) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         ErrorResponse error = new ErrorResponse(ex.getMessage());
         return ResponseEntity.status(status).body(error);
@@ -38,7 +43,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 
-    @ExceptionHandler(ProjectAccessException.class)
+    @ExceptionHandler({
+            ProjectAccessException.class,
+            TaskAccessException.class
+    })
     public ResponseEntity<ErrorResponse> handleProjectAccessException(Exception ex) {
         ErrorResponse error = new ErrorResponse(ex.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);

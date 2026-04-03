@@ -185,4 +185,34 @@ class ProjectServiceTest {
         assertThrows(ProjectAccessException.class,
                 () -> projectService.deleteProject("Test Project", otherUser));
     }
+
+    @Test
+    void testFindByName_ProjectExists() {
+        String projectName = "Test Project";
+        Project project = new Project();
+        project.setName(projectName);
+
+        when(projectRepository.findByName(projectName)).thenReturn(Optional.of(project));
+
+        Project result = projectService.findByName(projectName);
+
+        assertNotNull(result);
+        assertEquals(projectName, result.getName());
+        verify(projectRepository, times(1)).findByName(projectName);
+    }
+
+    @Test
+    void testFindByName_ProjectDoesNotExist() {
+        String projectName = "NonExistingProject";
+
+        when(projectRepository.findByName(projectName)).thenReturn(Optional.empty());
+
+        ProjectNotFoundException exception = assertThrows(
+                ProjectNotFoundException.class,
+                () -> projectService.findByName(projectName)
+        );
+
+        assertEquals("Project not found", exception.getMessage());
+        verify(projectRepository, times(1)).findByName(projectName);
+    }
 }

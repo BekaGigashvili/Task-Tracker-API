@@ -1,4 +1,4 @@
-package com.javaprojects.tasktrackerapi.service;
+package com.javaprojects.tasktrackerapi.service.auth;
 
 import com.javaprojects.tasktrackerapi.entity.Role;
 import com.javaprojects.tasktrackerapi.entity.User;

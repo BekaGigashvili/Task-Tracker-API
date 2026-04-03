@@ -2,7 +2,7 @@ package com.javaprojects.tasktrackerapi.controller;
 
 import com.javaprojects.tasktrackerapi.security.AuthenticationRequest;
 import com.javaprojects.tasktrackerapi.security.RegistrationRequest;
-import com.javaprojects.tasktrackerapi.service.AuthService;
+import com.javaprojects.tasktrackerapi.service.auth.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

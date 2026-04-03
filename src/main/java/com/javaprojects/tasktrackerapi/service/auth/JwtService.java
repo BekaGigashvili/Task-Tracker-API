@@ -1,4 +1,4 @@
-package com.javaprojects.tasktrackerapi.service;
+package com.javaprojects.tasktrackerapi.service.auth;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
