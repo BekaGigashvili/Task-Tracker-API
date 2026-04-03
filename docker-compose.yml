@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: task_tracker_db
+    environment:
+      POSTGRES_DB: task_tracker_api_db
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: task_tracker_api
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    environment:
+      DB_USERNAME: username
+      DB_PASSWORD: password
+
+volumes:
+  postgres_data:
