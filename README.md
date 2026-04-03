@@ -28,11 +28,11 @@ then in the browser go to `http://localhost:8080/swagger-ui/index.html`
 
 ## 🔐 Roles & Permissions
 
-| Role    | Permissions                                      |
-|---------|--------------------------------------------------|
-| USER    | View own tasks, update own task status, create/view/update/delete own projects |
+| Role    | Permissions                                                                                                                  |
+|---------|------------------------------------------------------------------------------------------------------------------------------|
+| USER    | View own tasks, update own task status                                                                                       |
 | MANAGER | Create/view/update/delete own tasks, assign user to own tasks, cannot update task status, create/view/update/delete projects |
-| ADMIN   | Create/view/update/delete tasks, assign user to tasks, cannot update task status |
+| ADMIN   | Create/view/update/delete tasks, Create/view/update/delete projects, assign user to tasks, cannot update task status         |
 
 
 
